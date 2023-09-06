@@ -1,5 +1,11 @@
 # @widelab-development/webflow-windsor
 
+## 1.0.4
+
+### Patch Changes
+
+- 7060903: Added global footer custom code
+
 ## 1.0.3
 
 ### Patch Changes
