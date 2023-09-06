@@ -1,5 +1,11 @@
 # @widelab-development/webflow-windsor
 
+## 1.0.3
+
+### Patch Changes
+
+- 7445382: Added video generator page custom code
+
 ## 1.0.2
 
 ### Patch Changes
