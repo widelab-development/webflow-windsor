@@ -1,5 +1,11 @@
 # @widelab-development/webflow-windsor
 
+## 1.0.5
+
+### Patch Changes
+
+- bfd2fd2: Add swipers code
+
 ## 1.0.4
 
 ### Patch Changes
