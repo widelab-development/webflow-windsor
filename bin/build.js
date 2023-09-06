@@ -7,7 +7,11 @@ const BUILD_DIRECTORY = 'dist';
 const PRODUCTION = process.env.NODE_ENV === 'production';
 
 // Config entrypoint files
-const ENTRY_POINTS = ['src/index.ts', 'src/video-generator-page.js'];
+const ENTRY_POINTS = [
+  'src/global-footer.js',
+  'src/global-swipers.js',
+  'src/video-generator-page.js',
+];
 
 // Config dev serving
 const LIVE_RELOAD = !PRODUCTION;
