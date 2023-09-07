@@ -15,6 +15,7 @@ const ENTRY_POINTS = [
   'src/page-pricing.js',
   'src/page-use-cases.js',
   'src/page-video-generator.js',
+  // 'src/index.js',
 ];
 
 // Config dev serving
