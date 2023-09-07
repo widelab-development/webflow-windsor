@@ -11,6 +11,7 @@ const ENTRY_POINTS = [
   'src/global-footer.js',
   'src/global-swipers.js',
   'src/page-home.js',
+  'src/page-pricing.js',
   'src/page-video-generator.js',
 ];
 
