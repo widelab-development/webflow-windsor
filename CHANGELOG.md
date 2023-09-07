@@ -1,5 +1,11 @@
 # @widelab-development/webflow-windsor
 
+## 1.0.12
+
+### Patch Changes
+
+- 1e600a9: New landing custom code
+
 ## 1.0.11
 
 ### Patch Changes
