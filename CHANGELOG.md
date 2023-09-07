@@ -1,5 +1,11 @@
 # @widelab-development/webflow-windsor
 
+## 1.0.13
+
+### Patch Changes
+
+- dad3296: Fixed video generator
+
 ## 1.0.12
 
 ### Patch Changes
