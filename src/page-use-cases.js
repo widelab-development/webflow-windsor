@@ -105,10 +105,6 @@ function initializeSwiperSeeMore() {
         spaceBetween: 27,
       },
     },
-    pagination: {
-      el: '.see-more-pagination',
-      clickable: true,
-    },
   });
   return swiperSeeMore;
 }
