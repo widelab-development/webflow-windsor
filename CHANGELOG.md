@@ -1,5 +1,11 @@
 # @widelab-development/webflow-windsor
 
+## 1.0.9
+
+### Patch Changes
+
+- 9408f65: Added pricing code
+
 ## 1.0.8
 
 ### Patch Changes
