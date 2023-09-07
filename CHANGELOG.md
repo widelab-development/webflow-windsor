@@ -1,5 +1,11 @@
 # @widelab-development/webflow-windsor
 
+## 1.0.8
+
+### Patch Changes
+
+- 44a403d: Shuffle function fix in video generator
+
 ## 1.0.7
 
 ### Patch Changes
