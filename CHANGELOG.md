@@ -1,5 +1,11 @@
 # @widelab-development/webflow-windsor
 
+## 1.0.10
+
+### Patch Changes
+
+- 8ba7d5e: Added use-cases code
+
 ## 1.0.9
 
 ### Patch Changes
