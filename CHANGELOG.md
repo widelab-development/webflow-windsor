@@ -1,5 +1,11 @@
 # @widelab-development/webflow-windsor
 
+## 1.0.15
+
+### Patch Changes
+
+- 2a0065d: Load videos on demand
+
 ## 1.0.14
 
 ### Patch Changes
