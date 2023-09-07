@@ -1,5 +1,11 @@
 # @widelab-development/webflow-windsor
 
+## 1.0.7
+
+### Patch Changes
+
+- 4006b2a: Added homepage code
+
 ## 1.0.6
 
 ### Patch Changes
