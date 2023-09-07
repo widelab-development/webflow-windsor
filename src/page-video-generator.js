@@ -60,7 +60,7 @@ const Shuffle = (a) => {
   let l = a.length,
     t,
     i;
-  while (l) {
+  for (let x = 0; x < l; x++) {
     i = Math.floor(Math.random() * (l - 1));
     t = a[l];
     a[l] = a[i];
