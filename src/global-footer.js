@@ -95,6 +95,9 @@ function setReferralCookie() {
     }
   }
 }
-
 window.addEventListener('load', setReferralCookie);
 /* End referral cookie */
+
+/* Start VWO Async SmartCode */
+vwo_$('body').vwoCss({ visibility: 'visible !important' });
+/* End VWO Async SmartCode */
