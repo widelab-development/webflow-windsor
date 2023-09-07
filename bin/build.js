@@ -10,7 +10,7 @@ const PRODUCTION = process.env.NODE_ENV === 'production';
 const ENTRY_POINTS = [
   'src/global-footer.js',
   'src/global-swipers.js',
-  'src/video-generator-page.js',
+  'src/page-video-generator.js',
 ];
 
 // Config dev serving

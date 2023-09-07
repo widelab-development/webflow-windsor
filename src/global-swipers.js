@@ -1,6 +1,4 @@
-import Swiper from 'https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.mjs';
-
-const swiperBlogPosts = new Swiper('.swiper-blog-posts', {
+new Swiper('.swiper-blog-posts', {
   spaceBetween: 27,
   freeMode: false,
   loop: true,
@@ -33,7 +31,7 @@ const swiperBlogPosts = new Swiper('.swiper-blog-posts', {
   },
 });
 
-const swiperBrands = new Swiper('.swiper-brands', {
+new Swiper('.swiper-brands', {
   loop: true,
   autoplay: {
     delay: 100,
@@ -61,6 +59,18 @@ const swiperBrands = new Swiper('.swiper-brands', {
   },
 });
 
+new Swiper('.swiper-big-testimonials', {
+  freeMode: false,
+  loop: true,
+  loopedSlides: 9,
+  centeredSlides: false,
+  slidesPerView: 1,
+  navigation: {
+    nextEl: '.swiper-big-testimonials-next',
+    prevEl: '.swiper-big-testimonials-prev',
+  },
+});
+
 const swiperTestomonials = new Swiper('.swiper-testimonial', {
   speed: 4000,
   slidesPerView: 'auto',
@@ -75,18 +85,6 @@ const swiperTestomonials = new Swiper('.swiper-testimonial', {
     1200: {
       spaceBetween: 32,
     },
-  },
-});
-
-const swiperBigTestomonials = new Swiper('.swiper-big-testimonials', {
-  freeMode: false,
-  loop: true,
-  loopedSlides: 9,
-  centeredSlides: false,
-  slidesPerView: 1,
-  navigation: {
-    nextEl: '.swiper-big-testimonials-next',
-    prevEl: '.swiper-big-testimonials-prev',
   },
 });
 
