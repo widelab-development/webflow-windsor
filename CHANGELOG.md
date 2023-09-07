@@ -1,5 +1,11 @@
 # @widelab-development/webflow-windsor
 
+## 1.0.6
+
+### Patch Changes
+
+- 60fa5e3: Footer code
+
 ## 1.0.5
 
 ### Patch Changes
