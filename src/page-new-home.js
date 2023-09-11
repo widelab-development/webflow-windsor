@@ -71,6 +71,8 @@ let larrow = $('#vg-slider .w-slider-arrow-left');
 let rarrow = $('#vg-slider .w-slider-arrow-right');
 let startX, diffX;
 
+var hls = [];
+
 // Get rid of empty slides
 for (let x = $('#vg-slider').find('.w-slide').length; x > mocks.length + 1; x--) {
   $('#vg-slider').find('.w-slide')[x - 1].remove();
@@ -103,15 +105,16 @@ const CreMocks = (m, el) => {
       v = document.getElementById(`swipe-video-${i + 2}`);
     }
     if (Hls.isSupported()) {
-      let hlsvid = new Hls();
-      hlsvid.loadSource('https://stream.mux.com/' + m[i] + '.m3u8');
-      hlsvid.attachMedia(v);
+      hls[`swipe-video-${i + 2}`] = new Hls({ autoStartLoad: false });
+      hls[`swipe-video-${i + 2}`].loadSource('https://stream.mux.com/' + m[i] + '.m3u8');
+      hls[`swipe-video-${i + 2}`].attachMedia(v);
     } else if (v.canPlayType('application/vnd.apple.mpegurl')) {
       v.src = 'https://stream.mux.com/' + m[i] + '.m3u8';
     } else {
       $(`#swipe-video-${i}`).attr('src', 'https://stream.mux.com/' + m[i] + '/medium.mp4');
     }
   }
+  $('.vg-poster-img img').attr('src', 'https://image.mux.com/' + m[0] + '/thumbnail.webp');
 };
 
 const ShareIcons = (n) => {
@@ -233,14 +236,19 @@ const CallAPI = (s, n) => {
         let mp4url = response.data.videoURL;
 
         if (Hls.isSupported()) {
-          let hls = new Hls();
-          hls.loadSource(hlsurl);
-          hls.attachMedia(mainVid);
+          hls['main-video'] = new Hls({ autoStartLoad: false });
+          hls['main-video'].loadSource(hlsurl);
+          hls['main-video'].attachMedia(mainVid);
         } else if (mainVid.canPlayType('application/vnd.apple.mpegurl')) {
           mainVid.src = hlsurl;
         } else {
           mainVid.src = mp4url;
         }
+
+        $('.vg-poster-img img').attr(
+          'src',
+          'https://image.mux.com/' + response.data.muxPlaybackId + '/thumbnail.webp'
+        );
 
         ShareIcons(n);
 
@@ -322,7 +330,9 @@ const ResetGenerator = () => {
     $(
       '.vg-svc-limit,.vg-svc-error,.vg-uv-generated,.vg-uv-limit,.vg-uv-error,.vg-uv-after-submit-success,.vg-uv-after-submit-error,.vg-blur,.vg-ended-block-wrapper,.vg-on-video,.vg-under-video-mobile,.vg-rs-share-box-mobile-wrapper,.vg-custom-arrow,.vg-swipe-info-mobile-wrapper'
     ).hide(0);
-    $('.vg-play-btn,.vg-svc-bg,.vg-svc-generate,.vg-notify-form,.vg-title-home').show(0);
+    $(
+      '.vg-play-btn,.vg-poster-img,.vg-svc-bg,.vg-svc-generate,.vg-notify-form,.vg-title-home'
+    ).show(0);
     $('#main-video').attr('src', '');
     $('#vg-name').val('');
     $('.vg-video-section-home-wrapper-new video').each(function () {
@@ -389,9 +399,12 @@ $('document').ready(() => {
     } else {
       if (firstSwipe) {
         let cv = $(this).parent('.vg-show-video-content-home').find('video');
+        let id = cv.attr('id');
         if (cv[0].paused) {
           cv[0].play();
           $(this).children('.vg-play-btn').fadeOut(300);
+          $(this).prev('.vg-poster-img').fadeOut(300);
+          hls[id].startLoad();
         } else {
           cv[0].pause();
         }
@@ -511,16 +524,20 @@ $('document').ready(() => {
  * Use cases custom code
  */
 function playPromiseHandler(v) {
-  let video = v.play();
-  if (video !== undefined) {
-    video
-      .then(() => {
-        console.log('Automatic playback started!');
-      })
-      .catch((error) => {
-        console.log('Auto-play was prevented - ' + error);
-      });
-  }
+  $('.uc-poster-img[data-video-id="' + v.id + '"]').fadeOut(300);
+  $('.uc-play-btn[data-video-id="' + v.id + '"]').fadeOut(300);
+  hls[v.id].startLoad();
+  v.play();
+  // let video = v.play();
+  // if (video !== undefined) {
+  //   video
+  //     .then(() => {
+  //       console.log('Automatic playback started!');
+  //     })
+  //     .catch((error) => {
+  //       console.log('Auto-play was prevented - ' + error);
+  //     });
+  // }
 }
 //play on mask click:
 Object.defineProperty(HTMLMediaElement.prototype, 'playing', {
@@ -542,17 +559,15 @@ function maskClick(modalVideos) {
 }
 //video stream inside modal:
 function videoCall(v) {
-  jQuery.getScript('https://cdn.jsdelivr.net/npm/hls.js@1', function () {
-    if (Hls.isSupported()) {
-      let hlsvid = new Hls();
-      hlsvid.loadSource('https://stream.mux.com/' + [v.id] + '.m3u8');
-      hlsvid.attachMedia(v);
-    } else if (v.canPlayType('application/vnd.apple.mpegurl')) {
-      v.src = 'https://stream.mux.com/' + [v.id] + '.m3u8';
-    } else {
-      v.src = 'https://stream.mux.com/' + [v.id] + '/medium.mp4';
-    }
-  });
+  if (Hls.isSupported()) {
+    hls[v.id] = new Hls({ autoStartLoad: false });
+    hls[v.id].loadSource('https://stream.mux.com/' + v.id + '.m3u8');
+    hls[v.id].attachMedia(v);
+  } else if (v.canPlayType('application/vnd.apple.mpegurl')) {
+    v.src = 'https://stream.mux.com/' + v.id + '.m3u8';
+  } else {
+    v.src = 'https://stream.mux.com/' + v.id + '/medium.mp4';
+  }
 }
 
 const tabs = document.querySelectorAll('.use-cases_tab-link');
@@ -567,17 +582,20 @@ for (let i = 0; i < tabs.length; i++) {
       item.classList.remove('is-active');
     });
     this.classList.add('is-active');
+
+    $('.w--tab-active').find('.video-box:visible').children('.uc-play-btn').show(0);
     //console.log(this)
     mirrorTabs[i].click();
     const tabWrapper = document.querySelector('.use-cases_component');
     tabWrapper.querySelectorAll('video').forEach((video) => {
-      video.setAttribute('src', '');
+      video.pause();
+      // video.setAttribute('src', '');
     });
 
-    let section = document.querySelectorAll('.use-cases_grid')[i];
-    section.querySelectorAll('video').forEach((i) => {
-      videoCall(i);
-    });
+    // let section = document.querySelectorAll('.use-cases_grid')[i];
+    // section.querySelectorAll('video').forEach((i) => {
+    //   videoCall(i);
+    // });
   });
 }
 
@@ -631,6 +649,14 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
     showVideo();
+
+    $('.use-cases_tabs .w-tab-pane video').each(function () {
+      let id = $(this).attr('id');
+      $('.uc-poster-img[data-video-id="' + id + '"] img').attr(
+        'src',
+        'https://image.mux.com/' + id + '/thumbnail.webp'
+      );
+    });
   }, 1000);
 });
 
