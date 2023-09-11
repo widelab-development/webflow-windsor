@@ -524,6 +524,8 @@ $('document').ready(() => {
  * Use cases custom code
  */
 function playPromiseHandler(v) {
+  $('.uc-poster-img[data-video-id="' + v.id + '"]').fadeOut(300);
+  $('.uc-play-btn[data-video-id="' + v.id + '"]').fadeOut(300);
   hls[v.id].startLoad();
   v.play();
   // let video = v.play();
@@ -557,17 +559,15 @@ function maskClick(modalVideos) {
 }
 //video stream inside modal:
 function videoCall(v) {
-  jQuery.getScript('https://cdn.jsdelivr.net/npm/hls.js@1', function () {
-    if (Hls.isSupported()) {
-      hls[v.id] = new Hls({ autoStartLoad: false });
-      hls[v.id].loadSource('https://stream.mux.com/' + [v.id] + '.m3u8');
-      hls[v.id].attachMedia(v);
-    } else if (v.canPlayType('application/vnd.apple.mpegurl')) {
-      v.src = 'https://stream.mux.com/' + [v.id] + '.m3u8';
-    } else {
-      v.src = 'https://stream.mux.com/' + [v.id] + '/medium.mp4';
-    }
-  });
+  if (Hls.isSupported()) {
+    hls[v.id] = new Hls({ autoStartLoad: false });
+    hls[v.id].loadSource('https://stream.mux.com/' + v.id + '.m3u8');
+    hls[v.id].attachMedia(v);
+  } else if (v.canPlayType('application/vnd.apple.mpegurl')) {
+    v.src = 'https://stream.mux.com/' + v.id + '.m3u8';
+  } else {
+    v.src = 'https://stream.mux.com/' + v.id + '/medium.mp4';
+  }
 }
 
 const tabs = document.querySelectorAll('.use-cases_tab-link');
@@ -582,17 +582,20 @@ for (let i = 0; i < tabs.length; i++) {
       item.classList.remove('is-active');
     });
     this.classList.add('is-active');
+
+    $('.w--tab-active').find('.video-box:visible').children('.uc-play-btn').show(0);
     //console.log(this)
     mirrorTabs[i].click();
     const tabWrapper = document.querySelector('.use-cases_component');
     tabWrapper.querySelectorAll('video').forEach((video) => {
-      video.setAttribute('src', '');
+      video.pause();
+      // video.setAttribute('src', '');
     });
 
-    let section = document.querySelectorAll('.use-cases_grid')[i];
-    section.querySelectorAll('video').forEach((i) => {
-      videoCall(i);
-    });
+    // let section = document.querySelectorAll('.use-cases_grid')[i];
+    // section.querySelectorAll('video').forEach((i) => {
+    //   videoCall(i);
+    // });
   });
 }
 
@@ -646,6 +649,14 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
     showVideo();
+
+    $('.use-cases_tabs .w-tab-pane video').each(function () {
+      let id = $(this).attr('id');
+      $('.uc-poster-img[data-video-id="' + id + '"] img').attr(
+        'src',
+        'https://image.mux.com/' + id + '/thumbnail.webp'
+      );
+    });
   }, 1000);
 });
 
