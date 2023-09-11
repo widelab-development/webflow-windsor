@@ -1,5 +1,11 @@
 # @widelab-development/webflow-windsor
 
+## 1.0.16
+
+### Patch Changes
+
+- da001e4: Added load on demand on new landing
+
 ## 1.0.15
 
 ### Patch Changes
