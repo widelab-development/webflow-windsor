@@ -340,7 +340,6 @@ $('document').ready(() => {
       if (firstSwipe) {
         let cv = $(this).parent('.vg-show-video-content').find('video');
         let id = cv.attr('id');
-        console.log(id);
         if (cv[0].paused) {
           cv[0].play();
           $(this).children('.vg-play-btn').fadeOut(300);
