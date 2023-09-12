@@ -1,5 +1,11 @@
 # @widelab-development/webflow-windsor
 
+## 1.0.17
+
+### Patch Changes
+
+- 2f25742: Videos on new landing fix
+
 ## 1.0.16
 
 ### Patch Changes
