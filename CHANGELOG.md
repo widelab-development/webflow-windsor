@@ -1,5 +1,11 @@
 # @widelab-development/webflow-windsor
 
+## 1.0.18
+
+### Patch Changes
+
+- cd7c223: Show poster img on pause
+
 ## 1.0.17
 
 ### Patch Changes
