@@ -583,6 +583,7 @@ for (let i = 0; i < tabs.length; i++) {
     });
     this.classList.add('is-active');
 
+    $('.w--tab-active').find('.video-box:visible').children('.uc-poster-img').show(0);
     $('.w--tab-active').find('.video-box:visible').children('.uc-play-btn').show(0);
     //console.log(this)
     mirrorTabs[i].click();
