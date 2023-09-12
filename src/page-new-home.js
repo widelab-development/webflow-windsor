@@ -592,10 +592,10 @@ for (let i = 0; i < tabs.length; i++) {
       // video.setAttribute('src', '');
     });
 
-    // let section = document.querySelectorAll('.use-cases_grid')[i];
-    // section.querySelectorAll('video').forEach((i) => {
-    //   videoCall(i);
-    // });
+    let section = document.querySelectorAll('.use-cases_grid')[i];
+    section.querySelectorAll('video').forEach((i) => {
+      videoCall(i);
+    });
   });
 }
 
