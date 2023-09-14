@@ -1,5 +1,11 @@
 # @widelab-development/webflow-windsor
 
+## 1.0.19
+
+### Patch Changes
+
+- 62d6d5e: Overal fixes
+
 ## 1.0.18
 
 ### Patch Changes
