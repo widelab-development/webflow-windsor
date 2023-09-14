@@ -1,15 +1,16 @@
 // Show loading animation.
 function playPromiseHandler(v) {
-  let video = v.play();
-  if (video !== undefined) {
-    video
-      .then(() => {
-        console.log('Automatic playback started!');
-      })
-      .catch((error) => {
-        console.log('Auto-play was prevented - ' + error);
-      });
-  }
+  v.play();
+  // let video = v.play();
+  // if (video !== undefined) {
+  //   video
+  //     .then(() => {
+  //       console.log('Automatic playback started!');
+  //     })
+  //     .catch((error) => {
+  //       console.log('Auto-play was prevented - ' + error);
+  //     });
+  // }
 }
 //play on mask click:
 Object.defineProperty(HTMLMediaElement.prototype, 'playing', {

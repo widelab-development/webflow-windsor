@@ -1,9 +1,5 @@
 new Swiper('.swiper-blog-posts', {
-  spaceBetween: 27,
-  freeMode: false,
   loop: true,
-  centeredSlides: false,
-  lazy: true,
   navigation: {
     nextEl: '.swiper-button-next',
     prevEl: '.swiper-button-prev',
@@ -15,11 +11,9 @@ new Swiper('.swiper-blog-posts', {
   keyboard: {
     enabled: true,
   },
+  slidesPerView: 1,
+  spaceBetween: 20,
   breakpoints: {
-    0: {
-      slidesPerView: 1,
-      spaceBetween: 20,
-    },
     767: {
       slidesPerView: 2,
       spaceBetween: 30,
@@ -31,32 +25,36 @@ new Swiper('.swiper-blog-posts', {
   },
 });
 
-new Swiper('.swiper-brands', {
-  loop: true,
-  autoplay: {
-    delay: 100,
-    disableOnInteraction: false,
-    waitForTransition: false,
-  },
-  speed: 4500,
-  slidesPerView: 2,
-  centeredSlides: true,
-  loopedSlides: 8,
-  spaceBetween: 56,
-  breakpoints: {
-    767: {
-      slidesPerView: 4,
+// duplicate elements
+$(document).ready(function () {
+  $('.swiper-brands .swiper-slide').each(function () {
+    $(this).clone().appendTo($('.swiper-brands .swiper-wrapper'));
+  });
+
+  new Swiper('.swiper-brands', {
+    loop: true,
+    freeMode: false,
+    autoplay: {
+      delay: 100,
+      disableOnInteraction: false,
+      waitForTransition: false,
     },
-    988: {
-      slidesPerView: 6,
-      noSwipingSelector: 'div',
+    speed: 4500,
+    spaceBetween: 56,
+    slidesPerView: 2,
+    breakpoints: {
+      767: {
+        slidesPerView: 4,
+      },
+      988: {
+        slidesPerView: 6,
+      },
+      1200: {
+        slidesPerView: 'auto',
+        spaceBetween: 72,
+      },
     },
-    1200: {
-      slidesPerView: 'auto',
-      spaceBetween: 72,
-      noSwipingSelector: 'div',
-    },
-  },
+  });
 });
 
 new Swiper('.swiper-big-testimonials', {
@@ -72,15 +70,13 @@ new Swiper('.swiper-big-testimonials', {
 });
 
 const swiperTestomonials = new Swiper('.swiper-testimonial', {
-  speed: 4000,
-  slidesPerView: 'auto',
-  centeredSlides: true,
+  autoplay: true,
   loop: true,
   loopedSlides: 5,
+  speed: 4000,
+  centeredSlides: true,
+  slidesPerView: 'auto',
   spaceBetween: 24,
-  autoplay: {
-    delay: 4000,
-  },
   breakpoints: {
     1200: {
       spaceBetween: 32,
