@@ -419,25 +419,25 @@ $('document').ready(() => {
   // Generate with form
   $('#vg-form-home').on('submit', function (e) {
     e.preventDefault();
-    $.getScript('https://cdn.jsdelivr.net/npm/hls.js@1', function () {
-      heroplayer && heroplayer.pause();
 
-      $('.vg-form-wrapper-home-new').fadeOut(300);
+    heroplayer && heroplayer.pause();
 
-      setTimeout(() => {
-        $('.home-video-vg-new').addClass('expanded expanded-grid');
-        $('.vg-video-section-home-wrapper-new').delay(300).fadeIn(300);
-      }, 300);
+    $('.vg-form-wrapper-home-new').fadeOut(300);
 
-      let name = CFL($('#vg-name').val());
-      apiCallSet.url = apiUrl + name;
+    setTimeout(() => {
+      $('.home-video-vg-new').addClass('expanded expanded-grid');
+      $('.vg-video-section-home-wrapper-new').delay(300).fadeIn(300);
+    }, 300);
 
-      SetName(name);
+    let name = CFL($('#vg-name').val());
+    apiCallSet.url = apiUrl + name;
 
-      setTimeout(() => {
-        CallAPI(apiCallSet, name);
-      }, 3000);
-    });
+    SetName(name);
+
+    setTimeout(() => {
+      CallAPI(apiCallSet, name);
+    }, 3000);
+
     return false;
   });
 
@@ -663,6 +663,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // steps slider:
 window.addEventListener('DOMContentLoaded', () => {
+  function video_play(slide) {
+    $('[data-slide] video').each(function () {
+      $(this).get(0).pause();
+      $(this).get(0).currentTime = 0;
+    });
+    $(`[data-slide="${slide}"] video`).get(0).autoplay = true;
+    $(`[data-slide="${slide}"] video`).get(0).play();
+  }
+
   function play_slide() {
     var tabTimeout;
     clearTimeout(tabTimeout);
@@ -672,7 +681,9 @@ window.addEventListener('DOMContentLoaded', () => {
       tabTimeout = setTimeout(function () {
         $('.steps_arrow-right').click();
         $('#steps-arrow').click(); // click resets timeout, so no need for interval
-      }, 8000); // 8 second tab loop
+        let nextStep = $('.steps_slide:not([aria-hidden="true"])').attr('aria-label').charAt(0);
+        video_play(nextStep);
+      }, 5500); // 5 second tab loop
     }
 
     // reset timeout if a tab is clicked
@@ -683,21 +694,21 @@ window.addEventListener('DOMContentLoaded', () => {
     // reset timeout if a tab is clicked
     $('.steps_button.is-first').click(function () {
       navigateSliderToSlide(1);
-
+      video_play(1);
       clearTimeout(tabTimeout);
       tabLoop();
     });
     // reset timeout if a tab is clicked
     $('.steps_button.is-second').click(function () {
       navigateSliderToSlide(2);
-
+      video_play(2);
       clearTimeout(tabTimeout);
       tabLoop();
     });
     // reset timeout if a tab is clicked
     $('.steps_button.is-third').click(function () {
       navigateSliderToSlide(3);
-
+      video_play(3);
       clearTimeout(tabTimeout);
       tabLoop();
     });
@@ -707,6 +718,7 @@ window.addEventListener('DOMContentLoaded', () => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           play_slide();
+          video_play(1);
           observer.unobserve(entry.target);
         }
       });
