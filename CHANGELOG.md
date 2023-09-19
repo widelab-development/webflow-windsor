@@ -1,5 +1,11 @@
 # @widelab-development/webflow-windsor
 
+## 1.0.21
+
+### Patch Changes
+
+- 38e8f66: remove inline hls
+
 ## 1.0.20
 
 ### Patch Changes
