@@ -1,5 +1,11 @@
 # @widelab-development/webflow-windsor
 
+## 1.0.20
+
+### Patch Changes
+
+- a154070: replace lottie with videos
+
 ## 1.0.19
 
 ### Patch Changes
