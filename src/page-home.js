@@ -396,7 +396,6 @@ $('document').ready(() => {
   // Generate with form
   $('#vg-form-home').on('submit', function (e) {
     e.preventDefault();
-    $.getScript('https://cdn.jsdelivr.net/npm/hls.js@1');
 
     heroplayer && heroplayer.pause();
 
