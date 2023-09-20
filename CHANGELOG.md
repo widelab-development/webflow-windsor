@@ -1,5 +1,11 @@
 # @widelab-development/webflow-windsor
 
+## 1.0.22
+
+### Patch Changes
+
+- 6ef206f: New homepage refactoring
+
 ## 1.0.21
 
 ### Patch Changes
