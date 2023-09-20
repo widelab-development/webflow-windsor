@@ -78,7 +78,8 @@ for (let x = $('#vg-slider').find('.w-slide').length; x > mocks.length + 1; x--)
   $('#vg-slider').find('.w-slide')[x - 1].remove();
 }
 
-//  Functions
+/** Functions */
+// Video generator
 const SliderRD = () => {
   Webflow.require('slider').destroy();
   Webflow.require('slider').ready();
@@ -347,21 +348,163 @@ const ResetGenerator = () => {
   }, 700);
 };
 
-// $(window).on('resize load orientationchange', function () {
-//   let pt = $(window).width() < 993 ? $('.home-video-vg-new').height() + 56 + 'px' : '0';
-//   $('.home-video-section-new').css({
-//     'padding-top': pt,
-//     height: $('.home-video-vg-new').innerHeight(),
-//   });
-//   // $('.home-video-section-new').css({ 'padding-top': pt, 'height': 'max(' + ($('.home-video-vg-new').height() + 51.6) + 'px, 100%)' });
-// });
+// Use cases
+function playPromiseHandler(v) {
+  $('.uc-poster-img[data-video-id="' + v.id + '"]').fadeOut(300);
+  $('.uc-play-btn[data-video-id="' + v.id + '"]').fadeOut(300);
+  hls[v.id].startLoad();
+  v.play();
+}
 
-// $('.home-video-vg-new').resize(function () {
-//   $('.home-video-section-new').css('height', $(this).innerHeight());
-// });
+function maskClick(modalVideos) {
+  modalVideos.querySelectorAll('.landing-mask').forEach((mask) => {
+    mask.addEventListener('click', function () {
+      let v = mask.parentElement.querySelector('video');
+      if (v.playing) {
+        v.pause();
+      } /*if (v.paused)*/ else {
+        playPromiseHandler(v);
+      }
+    });
+  });
+}
 
-// Events
-$('document').ready(() => {
+function videoCall(v) {
+  if (Hls.isSupported()) {
+    hls[v.id] = new Hls({ autoStartLoad: false });
+    hls[v.id].loadSource('https://stream.mux.com/' + v.id + '.m3u8');
+    hls[v.id].attachMedia(v);
+  } else if (v.canPlayType('application/vnd.apple.mpegurl')) {
+    v.src = 'https://stream.mux.com/' + v.id + '.m3u8';
+  } else {
+    v.src = 'https://stream.mux.com/' + v.id + '/medium.mp4';
+  }
+}
+
+function animateTestimonials(slide) {
+  //console.log(slide)
+  let testimonials = slide.querySelectorAll('.landing-testimonials_rich');
+  testimonials.forEach(function (textElement, index) {
+    let delay = 100 * index;
+    setTimeout(function () {
+      textElement.classList.add('is-active');
+      animateValue(textElement, 0, 60, constant);
+    }, delay);
+  });
+}
+
+function hideText(slide) {
+  let testimonials = slide.querySelectorAll('.landing-testimonials_rich');
+  testimonials.forEach(function (textElement) {
+    textElement.classList.add('is-not-visible');
+  });
+}
+
+function constant(duration, range) {
+  if (duration / range < 1) return 10;
+  return duration / range;
+}
+
+function animateValue(elementText, start, duration, easing) {
+  if (elementText.getAttribute('data-active') === false) return;
+  elementText.setAttribute('data-active', true);
+  const obj = elementText.querySelector('em');
+  if (!obj) return;
+  const end = parseInt(obj.getAttribute('data-text'));
+  const range = end - start;
+  let current = start;
+  let increment = range / duration;
+  if (increment < 1) increment = 1;
+  var step = function () {
+    current >= range ? (current = end) : (current += increment);
+    obj.innerHTML = Math.round(current);
+    if (current !== end) {
+      setTimeout(step, easing(duration, range));
+    } else {
+      return elementText.setAttribute('data-active', false);
+    }
+  };
+  setTimeout(step, easing(duration, range, start));
+}
+
+function navigateSliderToSlide(slideNumber) {
+  $('.steps_slider .w-slider-dot:nth-child(' + slideNumber + ')').trigger('tap');
+}
+
+function video_play(slide) {
+  $('[data-slide] video').each(function () {
+    $(this).get(0).pause();
+    $(this).get(0).currentTime = 0;
+  });
+  $(`[data-slide="${slide}"] video`).get(0).autoplay = true;
+  $(`[data-slide="${slide}"] video`).get(0).play();
+}
+
+function play_slide() {
+  var tabTimeout;
+  clearTimeout(tabTimeout);
+  tabLoop();
+  // define loop - cycle through all tabs
+  function tabLoop() {
+    tabTimeout = setTimeout(function () {
+      $('.steps_arrow-right').click();
+      $('#steps-arrow').click(); // click resets timeout, so no need for interval
+      let nextStep = $('.steps_slide:not([aria-hidden="true"])').attr('aria-label').charAt(0);
+      video_play(nextStep);
+    }, 5500); // 5 second tab loop
+  }
+
+  // reset timeout if a tab is clicked
+  $('.steps_arrow-right').click(function () {
+    clearTimeout(tabTimeout);
+    tabLoop();
+  });
+  // reset timeout if a tab is clicked
+  $('.steps_button.is-first').click(function () {
+    navigateSliderToSlide(1);
+    video_play(1);
+    clearTimeout(tabTimeout);
+    tabLoop();
+  });
+  // reset timeout if a tab is clicked
+  $('.steps_button.is-second').click(function () {
+    navigateSliderToSlide(2);
+    video_play(2);
+    clearTimeout(tabTimeout);
+    tabLoop();
+  });
+  // reset timeout if a tab is clicked
+  $('.steps_button.is-third').click(function () {
+    navigateSliderToSlide(3);
+    video_play(3);
+    clearTimeout(tabTimeout);
+    tabLoop();
+  });
+}
+
+function showVideo() {
+  document.querySelectorAll('.swiper-video-wrapper').forEach(function (wrapper) {
+    videoCall(wrapper.querySelector('video'));
+    wrapper.querySelectorAll('.use-cases_button').forEach(function (button, index) {
+      button.addEventListener('click', function () {
+        wrapper.querySelectorAll('.video-box').forEach((i) => {
+          i.style.display = 'none';
+        });
+        wrapper.querySelectorAll('.video-box')[index].style.display = 'block';
+        let videos = wrapper.querySelectorAll('video');
+        let activeVideo = videos[index];
+        videos.forEach(function (video) {
+          video.pause();
+          video.currentTime = 0;
+        });
+        playPromiseHandler(activeVideo);
+      });
+    });
+  });
+}
+
+/** Events - VG */
+$(document).ready(function () {
   // Vimeo in hero
   let heroplayer = false;
   $('.custom-play-wrapper').on('click', function (e) {
@@ -518,107 +661,44 @@ $('document').ready(() => {
     Processing($('#vg-notify-name').val(), false, $('#vg-notify-email').val());
     return false;
   });
-});
 
-/**
- * Use cases custom code
- */
-function playPromiseHandler(v) {
-  $('.uc-poster-img[data-video-id="' + v.id + '"]').fadeOut(300);
-  $('.uc-play-btn[data-video-id="' + v.id + '"]').fadeOut(300);
-  hls[v.id].startLoad();
-  v.play();
-  // let video = v.play();
-  // if (video !== undefined) {
-  //   video
-  //     .then(() => {
-  //       console.log('Automatic playback started!');
-  //     })
-  //     .catch((error) => {
-  //       console.log('Auto-play was prevented - ' + error);
-  //     });
-  // }
-}
-//play on mask click:
-Object.defineProperty(HTMLMediaElement.prototype, 'playing', {
-  get: function () {
-    return !!(this.currentTime > 0 && !this.paused && !this.ended && this.readyState > 2);
-  },
-});
-function maskClick(modalVideos) {
-  modalVideos.querySelectorAll('.landing-mask').forEach((mask) => {
-    mask.addEventListener('click', function () {
-      let v = mask.parentElement.querySelector('video');
-      if (v.playing) {
-        v.pause();
-      } /*if (v.paused)*/ else {
-        playPromiseHandler(v);
-      }
-    });
+  /** Events - Use cases */
+  Object.defineProperty(HTMLMediaElement.prototype, 'playing', {
+    get: function () {
+      return !!(this.currentTime > 0 && !this.paused && !this.ended && this.readyState > 2);
+    },
   });
-}
-//video stream inside modal:
-function videoCall(v) {
-  if (Hls.isSupported()) {
-    hls[v.id] = new Hls({ autoStartLoad: false });
-    hls[v.id].loadSource('https://stream.mux.com/' + v.id + '.m3u8');
-    hls[v.id].attachMedia(v);
-  } else if (v.canPlayType('application/vnd.apple.mpegurl')) {
-    v.src = 'https://stream.mux.com/' + v.id + '.m3u8';
-  } else {
-    v.src = 'https://stream.mux.com/' + v.id + '/medium.mp4';
+
+  const tabs = document.querySelectorAll('.use-cases_tab-link');
+  const mirrorTabs = document.querySelectorAll('.use-cases_tab-mirror');
+  tabs.forEach((item) => {
+    item.classList.remove('is-active');
+  });
+  tabs[0].classList.add('is-active');
+  for (let i = 0; i < tabs.length; i++) {
+    tabs[i].addEventListener('click', function () {
+      tabs.forEach((item) => {
+        item.classList.remove('is-active');
+      });
+      this.classList.add('is-active');
+
+      $('.w--tab-active').find('.video-box:visible').children('.uc-poster-img').show(0);
+      $('.w--tab-active').find('.video-box:visible').children('.uc-play-btn').show(0);
+      //console.log(this)
+      mirrorTabs[i].click();
+      const tabWrapper = document.querySelector('.use-cases_component');
+      tabWrapper.querySelectorAll('video').forEach((video) => {
+        video.pause();
+        // video.setAttribute('src', '');
+      });
+
+      let section = document.querySelectorAll('.use-cases_grid')[i];
+      section.querySelectorAll('video').forEach((i) => {
+        videoCall(i);
+      });
+    });
   }
-}
 
-const tabs = document.querySelectorAll('.use-cases_tab-link');
-const mirrorTabs = document.querySelectorAll('.use-cases_tab-mirror');
-tabs.forEach((item) => {
-  item.classList.remove('is-active');
-});
-tabs[0].classList.add('is-active');
-for (let i = 0; i < tabs.length; i++) {
-  tabs[i].addEventListener('click', function () {
-    tabs.forEach((item) => {
-      item.classList.remove('is-active');
-    });
-    this.classList.add('is-active');
-
-    $('.w--tab-active').find('.video-box:visible').children('.uc-poster-img').show(0);
-    $('.w--tab-active').find('.video-box:visible').children('.uc-play-btn').show(0);
-    //console.log(this)
-    mirrorTabs[i].click();
-    const tabWrapper = document.querySelector('.use-cases_component');
-    tabWrapper.querySelectorAll('video').forEach((video) => {
-      video.pause();
-      // video.setAttribute('src', '');
-    });
-
-    let section = document.querySelectorAll('.use-cases_grid')[i];
-    section.querySelectorAll('video').forEach((i) => {
-      videoCall(i);
-    });
-  });
-}
-
-new Swiper('.use-cases_swiper', {
-  // Optional parameters
-  spaceBetween: 24,
-  slidesPerView: 'auto',
-  slideToClickedSlide: true,
-  simulateTouch: false,
-  breakpoints: {
-    // when window width is >= 320px
-    320: {
-      loop: false,
-    },
-    // when window width is >= 640px
-    767: {
-      loop: false,
-    },
-  },
-});
-
-document.addEventListener('DOMContentLoaded', () => {
   setTimeout(() => {
     //tabUseCases()
     maskClick(document.querySelector('.section_use-cases'));
@@ -629,26 +709,6 @@ document.addEventListener('DOMContentLoaded', () => {
       videoCall(video);
     });
 
-    function showVideo() {
-      document.querySelectorAll('.swiper-video-wrapper').forEach(function (wrapper) {
-        videoCall(wrapper.querySelector('video'));
-        wrapper.querySelectorAll('.use-cases_button').forEach(function (button, index) {
-          button.addEventListener('click', function () {
-            wrapper.querySelectorAll('.video-box').forEach((i) => {
-              i.style.display = 'none';
-            });
-            wrapper.querySelectorAll('.video-box')[index].style.display = 'block';
-            let videos = wrapper.querySelectorAll('video');
-            let activeVideo = videos[index];
-            videos.forEach(function (video) {
-              video.pause();
-              video.currentTime = 0;
-            });
-            playPromiseHandler(activeVideo);
-          });
-        });
-      });
-    }
     showVideo();
 
     $('.use-cases_tabs .w-tab-pane video').each(function () {
@@ -659,60 +719,8 @@ document.addEventListener('DOMContentLoaded', () => {
       );
     });
   }, 1000);
-});
 
-// steps slider:
-window.addEventListener('DOMContentLoaded', () => {
-  function video_play(slide) {
-    $('[data-slide] video').each(function () {
-      $(this).get(0).pause();
-      $(this).get(0).currentTime = 0;
-    });
-    $(`[data-slide="${slide}"] video`).get(0).autoplay = true;
-    $(`[data-slide="${slide}"] video`).get(0).play();
-  }
-
-  function play_slide() {
-    var tabTimeout;
-    clearTimeout(tabTimeout);
-    tabLoop();
-    // define loop - cycle through all tabs
-    function tabLoop() {
-      tabTimeout = setTimeout(function () {
-        $('.steps_arrow-right').click();
-        $('#steps-arrow').click(); // click resets timeout, so no need for interval
-        let nextStep = $('.steps_slide:not([aria-hidden="true"])').attr('aria-label').charAt(0);
-        video_play(nextStep);
-      }, 5500); // 5 second tab loop
-    }
-
-    // reset timeout if a tab is clicked
-    $('.steps_arrow-right').click(function () {
-      clearTimeout(tabTimeout);
-      tabLoop();
-    });
-    // reset timeout if a tab is clicked
-    $('.steps_button.is-first').click(function () {
-      navigateSliderToSlide(1);
-      video_play(1);
-      clearTimeout(tabTimeout);
-      tabLoop();
-    });
-    // reset timeout if a tab is clicked
-    $('.steps_button.is-second').click(function () {
-      navigateSliderToSlide(2);
-      video_play(2);
-      clearTimeout(tabTimeout);
-      tabLoop();
-    });
-    // reset timeout if a tab is clicked
-    $('.steps_button.is-third').click(function () {
-      navigateSliderToSlide(3);
-      video_play(3);
-      clearTimeout(tabTimeout);
-      tabLoop();
-    });
-  }
+  // steps slider:
   let observer = new IntersectionObserver(
     (entries, observer) => {
       entries.forEach((entry) => {
@@ -725,12 +733,15 @@ window.addEventListener('DOMContentLoaded', () => {
     },
     { rootMargin: '0px 0px -100px 0px' }
   );
-  function navigateSliderToSlide(slideNumber) {
-    $('.steps_slider .w-slider-dot:nth-child(' + slideNumber + ')').trigger('tap');
-  }
+
   let targetSteps = $('.steps_slider')[0];
   observer.observe(targetSteps);
 
+  $('.landing-testimonials_rich em').each(function () {
+    $(this).attr('data-text', $(this).text().replace(/\s/g, ''));
+  });
+
+  /** Swipers */
   new Swiper('.landing-testimonials_swiper', {
     // Optional parameters
     loop: true,
@@ -782,69 +793,40 @@ window.addEventListener('DOMContentLoaded', () => {
       },
     },
   });
-  document.querySelectorAll('.landing-testimonials_rich em').forEach(function (i) {
-    let innerText = i.innerText.replace(/\s/g, '');
-    i.setAttribute('data-text', innerText);
-  });
-  function animateTestimonials(slide) {
-    //console.log(slide)
-    let testimonials = slide.querySelectorAll('.landing-testimonials_rich');
-    testimonials.forEach(function (textElement, index) {
-      let delay = 100 * index;
-      setTimeout(function () {
-        textElement.classList.add('is-active');
-        animateValue(textElement, 0, 60, constant);
-      }, delay);
-    });
-  }
-  function hideText(slide) {
-    let testimonials = slide.querySelectorAll('.landing-testimonials_rich');
-    testimonials.forEach(function (textElement) {
-      textElement.classList.add('is-not-visible');
-    });
-  }
 
-  function constant(duration, range) {
-    if (duration / range < 1) return 10;
-    return duration / range;
-  }
-  function animateValue(elementText, start, duration, easing) {
-    if (elementText.getAttribute('data-active') === false) return;
-    elementText.setAttribute('data-active', true);
-    const obj = elementText.querySelector('em');
-    if (!obj) return;
-    const endText = obj.getAttribute('data-text');
-    const end = parseInt(endText, 10);
-    const range = end - start;
-    let current = start;
-    let increment = range / duration;
-    if (increment < 1) increment = 1;
-    var step = function () {
-      current >= range ? (current = end) : (current += increment);
-      obj.innerHTML = Math.round(current);
-      if (current !== end) {
-        setTimeout(step, easing(duration, range));
-      } else {
-        return elementText.setAttribute('data-active', false);
-      }
-    };
-    setTimeout(step, easing(duration, range, start));
-  }
-});
-new Swiper('.steps_swiper', {
-  // Optional parameters
-  spaceBetween: 10,
-  slidesPerView: 'auto',
-  slideToClickedSlide: true,
-  simulateTouch: false,
-  breakpoints: {
-    // when window width is >= 320px
-    320: {
-      loop: false,
+  new Swiper('.use-cases_swiper', {
+    // Optional parameters
+    spaceBetween: 24,
+    slidesPerView: 'auto',
+    slideToClickedSlide: true,
+    simulateTouch: false,
+    breakpoints: {
+      // when window width is >= 320px
+      320: {
+        loop: false,
+      },
+      // when window width is >= 640px
+      767: {
+        loop: false,
+      },
     },
-    // when window width is >= 640px
-    767: {
-      loop: false,
+  });
+
+  new Swiper('.steps_swiper', {
+    // Optional parameters
+    spaceBetween: 10,
+    slidesPerView: 'auto',
+    slideToClickedSlide: true,
+    simulateTouch: false,
+    breakpoints: {
+      // when window width is >= 320px
+      320: {
+        loop: false,
+      },
+      // when window width is >= 640px
+      767: {
+        loop: false,
+      },
     },
-  },
+  });
 });
