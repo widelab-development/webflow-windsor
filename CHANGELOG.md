@@ -1,5 +1,11 @@
 # @widelab-development/webflow-windsor
 
+## 1.0.23
+
+### Patch Changes
+
+- ac4200f: Video in tabs
+
 ## 1.0.22
 
 ### Patch Changes
