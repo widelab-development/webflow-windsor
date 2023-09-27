@@ -443,7 +443,7 @@ function video_play(slide) {
 function play_slide() {
   var tabTimeout;
   clearTimeout(tabTimeout);
-  tabLoop();
+
   // define loop - cycle through all tabs
   function tabLoop() {
     tabTimeout = setTimeout(function () {
@@ -451,8 +451,9 @@ function play_slide() {
       $('#steps-arrow').click(); // click resets timeout, so no need for interval
       let nextStep = $('.steps_slide:not([aria-hidden="true"])').attr('aria-label').charAt(0);
       video_play(nextStep);
-    }, 5500); // 5 second tab loop
+    }, 5000); // 5 second tab loop
   }
+  tabLoop();
 
   // reset timeout if a tab is clicked
   $('.steps_arrow-right').click(function () {
@@ -460,25 +461,16 @@ function play_slide() {
     tabLoop();
   });
   // reset timeout if a tab is clicked
-  $('.steps_button.is-first').click(function () {
-    navigateSliderToSlide(1);
-    video_play(1);
-    clearTimeout(tabTimeout);
-    tabLoop();
-  });
-  // reset timeout if a tab is clicked
-  $('.steps_button.is-second').click(function () {
-    navigateSliderToSlide(2);
-    video_play(2);
-    clearTimeout(tabTimeout);
-    tabLoop();
-  });
-  // reset timeout if a tab is clicked
-  $('.steps_button.is-third').click(function () {
-    navigateSliderToSlide(3);
-    video_play(3);
-    clearTimeout(tabTimeout);
-    tabLoop();
+  $('.steps_button').click(function () {
+    let thisStep = $(this).parent().attr('aria-label').charAt(0);
+    if ($('.steps_slide:not([aria-hidden="true"])').attr('aria-label').charAt(0) !== thisStep) {
+      $('.steps-progress').stop(true, true).css('width', '0%');
+
+      navigateSliderToSlide(thisStep);
+      video_play(thisStep);
+      clearTimeout(tabTimeout);
+      tabLoop();
+    }
   });
 }
 
@@ -735,6 +727,11 @@ $(document).ready(function () {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           play_slide();
+          $('.steps_slide:not([aria-hidden="true"]) .steps-progress').animate(
+            { width: '100%' },
+            5500,
+            'linear'
+          );
           video_play(1);
           observer.unobserve(entry.target);
         }
