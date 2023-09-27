@@ -482,6 +482,15 @@ function play_slide() {
   });
 }
 
+function tabs_video_play(tab) {
+  $('[data-tab-video] video').each(function () {
+    $(this).get(0).pause();
+    $(this).get(0).currentTime = 0;
+  });
+  $(`[data-tab-video="${tab}"] video`).get(0).autoplay = true;
+  $(`[data-tab-video="${tab}"] video`).get(0).play();
+}
+
 function showVideo() {
   document.querySelectorAll('.swiper-video-wrapper').forEach(function (wrapper) {
     videoCall(wrapper.querySelector('video'));
@@ -739,6 +748,27 @@ $(document).ready(function () {
 
   $('.landing-testimonials_rich em').each(function () {
     $(this).attr('data-text', $(this).text().replace(/\s/g, ''));
+  });
+
+  /** Tabs */
+  // steps slider:
+  let tabsObserver = new IntersectionObserver(
+    (entries, tabsObserver) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          tabs_video_play(1);
+          tabsObserver.unobserve(entry.target);
+        }
+      });
+    },
+    { rootMargin: '0px 0px -100px 0px' }
+  );
+
+  let targetTab = $('.last_tab-link')[0];
+  tabsObserver.observe(targetTab);
+
+  $('.last_tab-link[data-w-tab]').on('click', function () {
+    tabs_video_play($(this).attr('data-w-tab'));
   });
 
   /** Swipers */
