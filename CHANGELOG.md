@@ -1,5 +1,11 @@
 # @widelab-development/webflow-windsor
 
+## 1.0.24
+
+### Patch Changes
+
+- 3af3cb8: Updated steps
+
 ## 1.0.23
 
 ### Patch Changes
